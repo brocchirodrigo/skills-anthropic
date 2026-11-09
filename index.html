@@ -58,6 +58,17 @@ section.area>h2 small{font-weight:400;letter-spacing:0}
 .sk{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:4px 24px;padding:14px 0;border-bottom:1px solid var(--line)}
 .sk .name{font:500 14px/1.4 var(--f-mono);word-break:break-word;padding-top:1px}
 .sk .body{min-width:0}
+.sk .name{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.sel-btn{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font:500 12.5px/1 var(--f-body);cursor:pointer}
+.sel-btn:hover{color:var(--fg);border-color:rgba(255,255,255,.2)}
+.sel-btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--primary);color:var(--fg)}
+.sk.is-sel{box-shadow:inset 3px 0 0 var(--primary);padding-left:12px;margin-left:-12px}
+.selection{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.selection .sel-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.selection .sel-title{font:600 12.5px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.selection .sel-list{margin:0;font-size:14.5px;line-height:1.6;color:var(--fg);word-break:break-word;user-select:all}
+.selection .sel-empty{margin:0;font-size:14px;color:var(--muted)}
+.selection .btn{height:30px;font-size:13px;padding:0 12px}
 .name-copy{all:unset;cursor:copy;font:inherit;color:var(--fg);border-bottom:1px dashed transparent;word-break:break-word}
 .name-copy:hover{color:var(--accent);border-bottom-color:var(--accent)}
 .name-copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
@@ -101,6 +112,7 @@ footer a,.lede a{color:var(--accent)}
   <p class="byline">Por Rodrigo Brocchi</p>
   <p class="lede">Somente skills com autoria declarada da Anthropic, sozinha ou em parceria, nos repositórios oficiais e nos marketplaces que ela mantém. Ficaram de fora os plugins só de parceiros (Zoom, Salesforce, LSEG, S&amp;P/Kensho, Apollo, Common Room, Tribe AI) e os que não declaram autor. Os resumos em português foram feitos a partir da descrição original de cada skill, que você pode abrir em cada item.</p>
   <div class="stats" id="stats"></div>
+  <div class="selection" id="selection" aria-live="polite"></div>
 </div></header>
 <div class="bar"><div class="wrap">
   <div class="controls">
@@ -171,8 +183,42 @@ function copyText(btn, text, pre){
   const fallback = () => { const dt = pre.closest("details"); if (dt) dt.open = true; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selecionado, use Cmd+C"; };
   try { navigator.clipboard.writeText(text).then(done, fallback); } catch(e){ fallback(); }
 }
+const SEL_KEY = "selecao-skills";
+const NAME_COUNT = {}; DATA.forEach(d => { NAME_COUNT[d.n] = (NAME_COUNT[d.n]||0) + 1; });
+DATA.forEach(d => { d._id = d.n + "|" + d.loc[0].r + "/" + d.loc[0].path; d._label = NAME_COUNT[d.n] > 1 ? `${d.n} (${d.loc[0].p==="-" ? d.loc[0].r : d.loc[0].p.split("/").pop()})` : d.n; });
+const BY_ID = Object.fromEntries(DATA.map(d => [d._id, d]));
+let SEL = new Set();
+try { const raw = JSON.parse(localStorage.getItem(SEL_KEY) || "[]"); if (Array.isArray(raw)) SEL = new Set(raw.filter(id => BY_ID[id])); } catch(e){}
+function saveSel(){ try { localStorage.setItem(SEL_KEY, JSON.stringify([...SEL])); } catch(e){} }
+function selText(){ return [...SEL].map(id => BY_ID[id]._label).join(", "); }
+function renderSel(){
+  const box = $("#selection");
+  if (!SEL.size){ box.innerHTML = `<div class="sel-head"><span class="sel-title">Seleção</span></div><p class="sel-empty">Nenhuma skill selecionada. Use o botão "Acrescentar seleção" abaixo do nome de cada skill.</p>`; return; }
+  box.innerHTML = `<div class="sel-head"><span class="sel-title">Seleção (${SEL.size})</span><button type="button" class="btn" data-act="sel-copy">Copiar lista</button><button type="button" class="btn" data-act="sel-clear">Limpar seleção</button></div><p class="sel-list" id="sel-list">${esc(selText())}</p>`;
+}
+function syncSelButtons(id){
+  document.querySelectorAll(`.name[data-sel-id="${CSS.escape(id)}"]`).forEach(n => {
+    const on = SEL.has(id), b = n.querySelector(".sel-btn");
+    b.setAttribute("aria-pressed", String(on)); b.textContent = on ? "Remover da seleção" : "Acrescentar seleção";
+    n.closest(".sk").classList.toggle("is-sel", on);
+  });
+}
 document.addEventListener("click", ev => {
   const t = ev.target.closest("[data-act]"); if (!t) return;
+  if (t.dataset.act==="sel"){
+    const id = t.dataset.id; if (SEL.has(id)) SEL.delete(id); else SEL.add(id);
+    saveSel(); syncSelButtons(id); renderSel(); return;
+  }
+  if (t.dataset.act==="sel-clear"){
+    const ids = [...SEL]; SEL.clear(); saveSel(); ids.forEach(syncSelButtons); renderSel(); return;
+  }
+  if (t.dataset.act==="sel-copy"){
+    const p = $("#sel-list"), txt = selText();
+    const done = () => { t.textContent = "Lista copiada"; setTimeout(() => { t.textContent = "Copiar lista"; }, 1600); };
+    const fb = () => { const r = document.createRange(); r.selectNodeContents(p); const s = getSelection(); s.removeAllRanges(); s.addRange(r); t.textContent = "Selecionado, use Cmd+C"; };
+    try { navigator.clipboard.writeText(txt).then(done, fb); } catch(e){ fb(); }
+    return;
+  }
   const card = t.closest(".sk");
   if (t.dataset.act==="inst"){
     const box = card.querySelector(".install"); const open = box.hidden; box.hidden = !open; t.setAttribute("aria-expanded", String(open));
@@ -205,8 +251,8 @@ function render(){
   $("#list").innerHTML = Object.keys(groups).sort((x,y)=>x.localeCompare(y,"pt")).map(g => `
     <section class="area"><h2>${esc(g)} <small>${groups[g].length}</small></h2>
     ${groups[g].sort((x,y)=>x.n.localeCompare(y.n)).map(d => `
-      <article class="sk">
-        <div class="name"><button type="button" class="name-copy" data-act="name" data-name="${esc(d.n)}" title="Clique para copiar o nome">${esc(d.n)}</button><span class="name-ok" aria-live="polite"></span></div>
+      <article class="sk${SEL.has(d._id) ? " is-sel" : ""}">
+        <div class="name" data-sel-id="${esc(d._id)}"><button type="button" class="name-copy" data-act="name" data-name="${esc(d.n)}" title="Clique para copiar o nome">${esc(d.n)}</button><span class="name-ok" aria-live="polite"></span><button type="button" class="sel-btn" data-act="sel" data-id="${esc(d._id)}" aria-pressed="${SEL.has(d._id)}">${SEL.has(d._id) ? "Remover da seleção" : "Acrescentar seleção"}</button></div>
         <div class="body">
           <p>${esc(d.pt)}</p>
           <div class="meta">${d.loc.map(locHTML).join("")}${d.loc.some(l=>l.r==="ext-apps")?`<span class="flag">coautoria Anthropic e MCP</span>`:""}${d._k?`<span class="tag">${d.con.length} conectores</span>`:""}${d._c?`<span class="tag">roda comandos</span>`:""}</div>
@@ -229,6 +275,7 @@ try{ localStorage.removeItem("f"); }catch(e){}
 ["#q","#area","#repo","#autor","#pkg","#cmd"].forEach(s => { $(s).value = ""; });
 ["#q","#area","#repo","#autor","#pkg","#cmd"].forEach(s => $(s).addEventListener("input", () => { save(); render(); }));
 render();
+renderSel();
 </script>
 
 </body>
