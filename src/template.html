@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Catálogo pesquisável das skills oficiais da Anthropic, com resumo em português, filtros por área, autoria, conectores e comandos, e o comando de instalação de cada uma.">
+<meta name="author" content="Rodrigo Brocchi">
+<meta name="color-scheme" content="dark">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:inherit}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Skills oficiais da Anthropic</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<style>
+/* Layout: diretório técnico em coluna única; barra de filtros fixa; skills agrupadas por área como entradas de um índice */
+:root{
+  color-scheme:dark;
+  --bg:#09090b; --surface:#18181b; --alt:#0f0f12; --fg:#fafafa; --muted:oklch(0.705 0.015 286.067); --line:rgba(255,255,255,.1);
+  --accent:oklch(0.704 0.191 22.216); --primary:oklch(0.637 0.237 25.331); --psolid:oklch(0.505 0.213 27.518); --pfg:#fef2f2;
+  --accent-soft:rgba(251,44,54,.12); --chip:#27272a; --warn:oklch(0.808 0.114 19.571); --warn-soft:rgba(251,44,54,.12);
+  --f-display:"Roboto",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --f-body:"Roboto",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --f-mono:"Roboto",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+}
+body{background:var(--bg);color:var(--fg);font:15px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--alt)}
+.grad{background:linear-gradient(90deg,var(--fg) 0%,var(--fg) 25%,var(--primary) 55%,var(--fg) 85%);background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:4px;animation:shine 6s ease-in-out infinite}
+@keyframes shine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@media (prefers-reduced-motion: reduce){.grad{animation:none}}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{padding-block:56px 32px;background:var(--alt);border-bottom:1px solid var(--line)}
+header.top .lede{max-width:none}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.03);font:600 12.5px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--primary)}
+h1{font:700 clamp(32px,5.4vw,50px)/1.1 var(--f-display);margin:18px 0 12px;text-wrap:balance;letter-spacing:-.03em}
+.lede{max-width:66ch;color:var(--muted);margin:0}
+.byline{font:500 14px/1.4 var(--f-body);color:var(--fg);margin:0 0 12px}
+.lede code{font:13px var(--f-mono);background:var(--chip);padding:1px 5px;border-radius:4px;color:var(--fg)}
+.stats{display:flex;flex-wrap:wrap;gap:8px 28px;margin:22px 0 0;padding:16px 0 0;border-top:1px solid var(--line)}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat b{font:600 22px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:12.5px;color:var(--muted)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px}
+.controls{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;align-items:center}
+.controls input{grid-column:1/-1}
+.tag{font:12.5px/1 var(--f-body);color:var(--fg);background:var(--chip);padding:6px 11px;border-radius:999px}
+.evid ul{margin:6px 0 0;padding-left:18px;font:12.5px/1.6 var(--f-mono);color:var(--muted)}
+.evid li{word-break:break-word}
+.evid h4{font:600 12px/1.4 var(--f-body);margin:8px 0 0;color:var(--fg)}
+.controls input,.controls select{font:inherit;font-size:14px;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0;height:42px}
+.controls input::placeholder{color:var(--muted)}
+.controls input:focus-visible,.controls select:focus-visible,a:focus-visible,summary:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.count{font:13px var(--f-mono);color:var(--muted);margin-top:8px;font-variant-numeric:tabular-nums}
+.count button{font:inherit;color:var(--accent);background:none;border:0;padding:0;margin-left:10px;cursor:pointer;text-decoration:underline}
+main{padding-block:8px 64px}
+section.area{margin-top:28px}
+section.area>h2{display:flex;align-items:baseline;gap:10px;font:600 13px/1 var(--f-body);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 4px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+section.area>h2 small{font-weight:400;letter-spacing:0}
+.sk{display:grid;grid-template-columns:minmax(0,15rem) minmax(0,1fr);gap:4px 24px;padding:14px 0;border-bottom:1px solid var(--line)}
+.sk .name{font:500 14px/1.4 var(--f-mono);word-break:break-word;padding-top:1px}
+.sk .body{min-width:0}
+.sk .name{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.sel-btn{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--muted);font:500 12.5px/1 var(--f-body);cursor:pointer}
+.sel-btn:hover{color:var(--fg);border-color:rgba(255,255,255,.2)}
+.sel-btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--primary);color:var(--fg)}
+.sk.is-sel{box-shadow:inset 3px 0 0 var(--primary);padding-left:12px;margin-left:-12px}
+.selection{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.selection .sel-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.selection .sel-title{font:600 12.5px/1 var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.selection .sel-list{margin:0;font-size:14.5px;line-height:1.6;color:var(--fg);word-break:break-word;user-select:all}
+.selection .sel-empty{margin:0;font-size:14px;color:var(--muted)}
+.selection .btn{height:30px;font-size:13px;padding:0 12px}
+.name-copy{all:unset;cursor:copy;font:inherit;color:var(--fg);border-bottom:1px dashed transparent;word-break:break-word}
+.name-copy:hover{color:var(--accent);border-bottom-color:var(--accent)}
+.name-copy:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+.name-ok{display:block;font:400 12px/1.4 var(--f-body);color:var(--accent);min-height:0}
+.sk p{margin:0}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.loc{font:12.5px/1 var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);padding:6px 11px;border-radius:999px;text-decoration:none;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.loc:hover{text-decoration:underline}
+.flag{font:12.5px/1 var(--f-body);color:var(--warn);background:var(--warn-soft);padding:6px 11px;border-radius:999px}
+details{margin-top:8px}
+summary{font-size:12.5px;color:var(--muted);cursor:pointer;width:max-content;max-width:100%}
+details p{font-size:13px;color:var(--muted);margin-top:6px;max-width:72ch}
+.empty{padding:48px 0;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;order:2}
+.btn{display:inline-flex;align-items:center;height:36px;font:500 14px/1 var(--f-body);color:var(--fg);background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:12px;padding:0 14px;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:rgba(255,255,255,.2);background:rgba(255,255,255,.07)}
+.btn-primary{background:var(--psolid);color:var(--pfg);border-color:transparent}
+.btn-primary:hover{background:var(--primary);border-color:transparent}
+.btn[aria-expanded="true"]{border-color:var(--accent);color:var(--accent)}
+.install{margin-top:8px;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:12px 14px}
+.install p{font-size:12.5px;color:var(--muted);margin:0 0 6px}
+.install pre{margin:0;font:12.5px/1.6 var(--f-mono);overflow-x:auto;white-space:pre;user-select:all}
+.install .row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.install .row pre{min-width:0;flex:1}
+.copy-ok{font-size:12px;color:var(--accent)}
+footer{padding-block:24px 48px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+footer p{max-width:72ch;margin:0 0 8px}
+footer a,.lede a{color:var(--accent)}
+@media (max-width:640px){
+  .controls{grid-template-columns:1fr 1fr}
+  .controls input,.controls #cmd{grid-column:1/-1}
+  .sk{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="eyebrow">Catálogo · github.com/anthropics</div>
+  <h1>Skills oficiais da <span class="grad">Anthropic</span></h1>
+  <p class="byline">Por Rodrigo Brocchi</p>
+  <p class="lede">Somente skills com autoria declarada da Anthropic, sozinha ou em parceria, nos repositórios oficiais e nos marketplaces que ela mantém. Ficaram de fora os plugins só de parceiros (Zoom, Salesforce, LSEG, S&amp;P/Kensho, Apollo, Common Room, Tribe AI) e os que não declaram autor. Os resumos em português foram feitos a partir da descrição original de cada skill, que você pode abrir em cada item.</p>
+  <div class="stats" id="stats"></div>
+  <div class="selection" id="selection" aria-live="polite"></div>
+</div></header>
+<div class="bar"><div class="wrap">
+  <div class="controls">
+    <input id="q" type="search" placeholder="Buscar por nome ou descrição" aria-label="Buscar skills">
+    <select id="area" aria-label="Filtrar por área"><option value="">Todas as áreas</option></select>
+    <select id="repo" aria-label="Filtrar por repositório"><option value="">Todos os repositórios</option></select>
+    <select id="autor" aria-label="Filtrar por autoria"><option value="">Toda autoria</option><option value="a">Só Anthropic</option><option value="p">Anthropic + parceiro</option></select>
+    <select id="pkg" aria-label="Filtrar por conectores de terceiros"><option value="">Conectores: todas</option><option value="s">Instala conectores</option><option value="n">Sem conectores</option></select>
+    <select id="cmd" aria-label="Filtrar por execução de comandos"><option value="">Comandos: todas</option><option value="s">Roda comandos ou scripts</option><option value="n">Não roda comandos</option></select>
+  </div>
+  <div class="count" id="count" aria-live="polite"></div>
+</div></div>
+<main class="wrap" id="list"></main>
+<footer class="wrap">
+  <p>Catálogo organizado por Rodrigo Brocchi.</p>
+  <p>Levantamento de __DATE__ sobre a branch principal dos marketplaces oficiais da Anthropic (anthropics/skills, claude-plugins-official, knowledge-work-plugins, financial-services-plugins, life-sciences e claude-for-financial-advisors) e dos repositórios que esses marketplaces apontam como de autoria da Anthropic, como o mcp-apps, assinado por "Anthropic / Model Context Protocol". Quando a mesma skill aparece em vários plugins com a mesma descrição, ela é listada uma vez, com todos os lugares onde está.</p>
+  <p>Critério de autoria: vale o autor declarado no marketplace ou no plugin.json. Quando o plugin não declara autor, vale o dono do marketplace, desde que seja a Anthropic e o plugin não esteja numa pasta de terceiros (external_plugins ou partner-built). Plugins só de parceiros e plugins sem autor em pastas de terceiros ficam de fora.</p>
+</footer>
+<script>
+const DATA = __DATA__;
+const REPO_LABEL = {}; DATA.forEach(d => d.loc.forEach(l => { if (!REPO_LABEL[l.r]) REPO_LABEL[l.r] = l.o==="anthropics" ? (l.r==="skills" ? "anthropics/skills" : l.r) : `${l.o}/${l.r}`; }));
+const $ = s => document.querySelector(s);
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+DATA.forEach(d => { d._s = norm([d.n,d.pt,d.en,d.a,...d.loc.map(l=>l.r+" "+l.p)].join(" ")); d._r = new Set(d.loc.map(l=>l.r)); d._p = d.loc.some(l=>l.co); d._k = d.con.length>0; d._s += " " + norm(d.con.map(x=>x.k).join(" ")); d._c = d.cmd.length>0 || d.sh; });
+{ const nk = DATA.filter(d=>d._k).length, nc = DATA.filter(d=>d._c).length;
+  $("#pkg").options[1].text = `Com conectores (${nk})`; $("#pkg").options[2].text = `Sem conectores (${DATA.length-nk})`;
+  $("#cmd").options[1].text = `Roda comandos (${nc})`; $("#cmd").options[2].text = `Não roda comandos (${DATA.length-nc})`; }
+const nP = DATA.filter(d=>d._p).length;
+$("#autor").options[1].text = `Só Anthropic (${DATA.length-nP})`; $("#autor").options[2].text = `Anthropic + parceiro (${nP})`;
+const areas = [...new Set(DATA.map(d=>d.a))].sort((a,b)=>a.localeCompare(b,"pt"));
+const byArea = a => DATA.filter(d=>d.a===a).length;
+areas.forEach(a => $("#area").insertAdjacentHTML("beforeend", `<option value="${a}">${a} (${byArea(a)})</option>`));
+Object.entries(REPO_LABEL).forEach(([k,v]) => { const n = DATA.filter(d=>d._r.has(k)).length; $("#repo").insertAdjacentHTML("beforeend", `<option value="${k}">${v} (${n})</option>`); });
+const names = new Set(DATA.map(d=>d.n)).size;
+$("#stats").innerHTML = [[DATA.length,"skills"],[names,"nomes diferentes"],[areas.length,"áreas"],[Object.keys(REPO_LABEL).length,"repositórios"]].map(([b,s])=>`<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("");
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function locHTML(l){
+  const url = `https://github.com/${l.o}/${l.r}/tree/main/${l.path}`;
+  const label = (l.r==="skills" || l.p===l.r) ? REPO_LABEL[l.r] : `${REPO_LABEL[l.r]} › ${l.p}`;
+  return `<a class="loc" href="${url}" target="_blank" rel="noopener" title="${esc(label)}">${esc(label)}</a>`;
+}
+function installCmd(d){
+  const l = d.loc.find(x => x.m) || d.loc[0];
+  if (!l.m) return { plugin: l.p, none: true, cmd: "" };
+  return { plugin: l.p, cmd: `/plugin marketplace add ${l.mr}\n/plugin install ${l.p}@${l.m}` };
+}
+function ghUrl(l){ return `https://github.com/${l.o}/${l.r}/tree/main/${l.path}`; }
+function copyText(btn, text, pre){
+  const label = btn.dataset.label || "Copiar";
+  const done = () => { btn.textContent = label==="Copiar" ? "Copiado" : "Comandos copiados, cole no Claude Code"; setTimeout(() => { btn.textContent = label; }, 2200); };
+  const fallback = () => { const dt = pre.closest("details"); if (dt) dt.open = true; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selecionado, use Cmd+C"; };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch(e){ fallback(); }
+}
+const SEL_KEY = "selecao-skills";
+const NAME_COUNT = {}; DATA.forEach(d => { NAME_COUNT[d.n] = (NAME_COUNT[d.n]||0) + 1; });
+DATA.forEach(d => { d._id = d.n + "|" + d.loc[0].r + "/" + d.loc[0].path; d._label = NAME_COUNT[d.n] > 1 ? `${d.n} (${d.loc[0].p==="-" ? d.loc[0].r : d.loc[0].p.split("/").pop()})` : d.n; });
+const BY_ID = Object.fromEntries(DATA.map(d => [d._id, d]));
+let SEL = new Set();
+let ONLY_SEL = false;
+try { const raw = JSON.parse(localStorage.getItem(SEL_KEY) || "[]"); if (Array.isArray(raw)) SEL = new Set(raw.filter(id => BY_ID[id])); } catch(e){}
+function saveSel(){ try { localStorage.setItem(SEL_KEY, JSON.stringify([...SEL])); } catch(e){} }
+function selText(){ return [...SEL].map(id => BY_ID[id]._label).join(", "); }
+function folderName(d){ const dupSel = [...SEL].filter(id => BY_ID[id].n === d.n).length > 1; return dupSel ? `${d.n}-${(d.loc[0].p==="-" ? d.loc[0].r : d.loc[0].p.split("/").pop())}` : d.n; }
+function buildPrompt(){
+  const items = [...SEL].map(id => BY_ID[id]);
+  const lines = [];
+  lines.push("Instale as skills abaixo no meu Claude Code como skills pessoais, cada uma em ~/.claude/skills/<pasta>/. Todas são oficiais da Anthropic e estão em repositórios públicos do GitHub.");
+  lines.push("");
+  lines.push("Para cada skill:");
+  lines.push("1. Baixe só a pasta indicada do repositório (por exemplo com git clone --depth 1 --filter=blob:none --sparse e git sparse-checkout), sem clonar o repositório inteiro quando der. Reaproveite o mesmo clone para skills do mesmo repositório.");
+  lines.push("2. Copie a pasta para ~/.claude/skills/<pasta>/ usando o nome de pasta indicado. Se já existir, substitua.");
+  lines.push("3. Procure no SKILL.md e nos outros arquivos da pasta referências a arquivos fora dela (caminhos com ../, como ../../shared/arquivo.md). Copie esses arquivos para dentro da pasta da skill e ajuste os caminhos para continuarem funcionando.");
+  lines.push("4. Se a skill usar ${CLAUDE_PLUGIN_ROOT} ou depender de scripts do plugin que não dá para trazer junto, não force: instale o plugin inteiro (pelo terminal com claude plugin marketplace add e claude plugin install, usando o marketplace e o plugin indicados na linha dela) ou, se não conseguir, me passe os comandos /plugin para eu rodar. Me avise em qualquer caso.");
+  lines.push("5. Não instale conectores, pacotes ou dependências sem me perguntar antes.");
+  lines.push("6. Apague os clones temporários no final.");
+  lines.push("");
+  lines.push("No final, mostre uma tabela com cada skill, onde ficou instalada e se algo ficou pendente. Avise se for preciso reiniciar o Claude Code para carregar as skills.");
+  lines.push("");
+  lines.push("Skills:");
+  items.forEach((d, i) => {
+    const l = d.loc[0], ic = installCmd(d);
+    lines.push(`${i+1}. ${d.n}`);
+    lines.push(`   Repositório: https://github.com/${l.o}/${l.r}`);
+    lines.push(`   Pasta no repositório: ${l.path}`);
+    lines.push(`   Pasta de destino: ~/.claude/skills/${folderName(d)}/`);
+    if (ic.none) lines.push("   Plugin: não publicado em marketplace, instale só pela pasta.");
+    else lines.push(`   Plugin, se precisar: ${ic.cmd.split("\n").join(" e depois ")}`);
+    const notes = [];
+    if ((d.dep||[]).includes("plugin_root")) notes.push("usa arquivos do plugin (${CLAUDE_PLUGIN_ROOT}), então provavelmente vai precisar do plugin inteiro");
+    if ((d.dep||[]).includes("parent_path")) notes.push("referencia arquivos fora da pasta da skill, traga junto");
+    if (d.con.length) notes.push(`o plugin tem conectores (${d.con.map(x=>x.k).join(", ")}), que não devem ser instalados sem me perguntar`);
+    if (notes.length) lines.push(`   Observações: ${notes.join("; ")}.`);
+  });
+  return lines.join("\n");
+}
+function renderSel(){
+  const box = $("#selection");
+  if (!SEL.size){ box.innerHTML = `<div class="sel-head"><span class="sel-title">Seleção</span></div><p class="sel-empty">Nenhuma skill selecionada. Use o botão "Acrescentar seleção" abaixo do nome de cada skill.</p>`; return; }
+  box.innerHTML = `<div class="sel-head"><span class="sel-title">Seleção (${SEL.size})</span><button type="button" class="btn btn-primary" data-act="sel-prompt">Copiar pedido para o Claude Code</button><button type="button" class="btn" data-act="sel-only" aria-pressed="${ONLY_SEL}">${ONLY_SEL ? "Mostrar todas" : "Filtrar selecionadas"}</button><button type="button" class="btn" data-act="sel-copy">Copiar lista</button><button type="button" class="btn" data-act="sel-clear">Limpar seleção</button></div><p class="sel-list" id="sel-list">${esc(selText())}</p><details class="howto"><summary>Ver o pedido completo</summary><div class="install"><p>Cole no Claude Code. Ele baixa cada skill direto do GitHub e instala como skill pessoal em ~/.claude/skills, sem depender de marketplace.</p><pre id="sel-prompt" style="white-space:pre-wrap">${esc(buildPrompt())}</pre></div></details>`;
+}
+function syncSelButtons(id){
+  document.querySelectorAll(`.name[data-sel-id="${CSS.escape(id)}"]`).forEach(n => {
+    const on = SEL.has(id), b = n.querySelector(".sel-btn");
+    b.setAttribute("aria-pressed", String(on)); b.textContent = on ? "Remover da seleção" : "Acrescentar seleção";
+    n.closest(".sk").classList.toggle("is-sel", on);
+  });
+}
+document.addEventListener("click", ev => {
+  const t = ev.target.closest("[data-act]"); if (!t) return;
+  if (t.dataset.act==="sel"){
+    const id = t.dataset.id; if (SEL.has(id)) SEL.delete(id); else SEL.add(id);
+    saveSel(); if (!SEL.size) ONLY_SEL = false; if (ONLY_SEL || !SEL.size) render(); else syncSelButtons(id); renderSel(); return;
+  }
+  if (t.dataset.act==="sel-only"){
+    if (!ONLY_SEL){ ["#q","#area","#repo","#autor","#pkg","#cmd"].forEach(s => { $(s).value = ""; }); ONLY_SEL = true; }
+    else ONLY_SEL = false;
+    render(); renderSel();
+    const bar = document.querySelector(".bar"); if (bar && bar.getBoundingClientRect().top > 0) bar.scrollIntoView({block:"start"});
+    return;
+  }
+  if (t.dataset.act==="sel-clear"){
+    const ids = [...SEL]; SEL.clear(); saveSel(); const was = ONLY_SEL; ONLY_SEL = false; if (was) render(); else ids.forEach(syncSelButtons); renderSel(); return;
+  }
+  if (t.dataset.act==="sel-prompt"){
+    const pre = $("#sel-prompt"), txt = buildPrompt();
+    const done = () => { t.textContent = "Pedido copiado, cole no Claude Code"; setTimeout(() => { t.textContent = "Copiar pedido para o Claude Code"; }, 2200); };
+    const fb = () => { const dt = pre.closest("details"); if (dt) dt.open = true; const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); t.textContent = "Selecionado, use Cmd+C"; };
+    try { navigator.clipboard.writeText(txt).then(done, fb); } catch(e){ fb(); }
+    return;
+  }
+  if (t.dataset.act==="sel-copy"){
+    const p = $("#sel-list"), txt = selText();
+    const done = () => { t.textContent = "Lista copiada"; setTimeout(() => { t.textContent = "Copiar lista"; }, 1600); };
+    const fb = () => { const r = document.createRange(); r.selectNodeContents(p); const s = getSelection(); s.removeAllRanges(); s.addRange(r); t.textContent = "Selecionado, use Cmd+C"; };
+    try { navigator.clipboard.writeText(txt).then(done, fb); } catch(e){ fb(); }
+    return;
+  }
+  const card = t.closest(".sk");
+  if (t.dataset.act==="inst"){
+    const box = card.querySelector(".install"); const open = box.hidden; box.hidden = !open; t.setAttribute("aria-expanded", String(open));
+  } else if (t.dataset.act==="name"){
+    const ok = t.parentElement.querySelector(".name-ok");
+    const show = msg => { ok.textContent = msg; clearTimeout(t._tm); t._tm = setTimeout(() => { ok.textContent = ""; }, 1600); };
+    const sel = () => { const r = document.createRange(); r.selectNodeContents(t); const s = getSelection(); s.removeAllRanges(); s.addRange(r); show("Selecionado, use Cmd+C"); };
+    try { navigator.clipboard.writeText(t.dataset.name).then(() => show("Nome copiado"), sel); } catch(e){ sel(); }
+  } else if (t.dataset.act==="copy"){
+    const pre = card.querySelector(".install pre"); copyText(t, pre.textContent, pre);
+  }
+});
+function render(){
+  const q = norm($("#q").value.trim()), a = $("#area").value, r = $("#repo").value, au = $("#autor").value, pk = $("#pkg").value, cm = $("#cmd").value;
+  const terms = q.split(/\s+/).filter(Boolean);
+  const hits = DATA.filter(d => (!a||d.a===a) && (!r||d._r.has(r)) && (!au||(au==="p")===d._p) && (!pk||(pk==="s")===d._k) && (!cm||(cm==="s")===d._c) && (!ONLY_SEL||SEL.has(d._id)) && terms.every(t=>d._s.includes(t)));
+  const filtered = q||a||r||au||pk||cm||ONLY_SEL;
+  const active = [];
+  if (q) active.push(`busca "${esc($("#q").value.trim())}"`);
+  if (a) active.push(`área ${esc(a)}`);
+  if (r) active.push(`repositório ${esc(REPO_LABEL[r])}`);
+  if (au) active.push(au==="p" ? "Anthropic + parceiro" : "só Anthropic");
+  if (pk) active.push(pk==="s" ? "instala conectores" : "sem conectores");
+  if (cm) active.push(cm==="s" ? "roda comandos" : "sem comandos");
+  if (ONLY_SEL) active.push("só selecionadas");
+  $("#count").innerHTML = `${hits.length} de ${DATA.length} skills` + (filtered ? ` · filtros: ${active.join(" · ")}<button type="button" id="clear">Limpar filtros</button>` : "");
+  if (filtered) $("#clear").onclick = () => { $("#q").value=""; $("#area").value=""; $("#repo").value=""; $("#autor").value=""; $("#pkg").value=""; $("#cmd").value=""; ONLY_SEL = false; save(); render(); renderSel(); };
+  if (!hits.length){ $("#list").innerHTML = `<p class="empty">Nenhuma skill encontrada com esses filtros. Tente outra palavra ou limpe os filtros.</p>`; return; }
+  const groups = {};
+  hits.forEach(d => (groups[d.a] ||= []).push(d));
+  $("#list").innerHTML = Object.keys(groups).sort((x,y)=>x.localeCompare(y,"pt")).map(g => `
+    <section class="area"><h2>${esc(g)} <small>${groups[g].length}</small></h2>
+    ${groups[g].sort((x,y)=>x.n.localeCompare(y.n)).map(d => `
+      <article class="sk${SEL.has(d._id) ? " is-sel" : ""}">
+        <div class="name" data-sel-id="${esc(d._id)}"><button type="button" class="name-copy" data-act="name" data-name="${esc(d.n)}" title="Clique para copiar o nome">${esc(d.n)}</button><span class="name-ok" aria-live="polite"></span><button type="button" class="sel-btn" data-act="sel" data-id="${esc(d._id)}" aria-pressed="${SEL.has(d._id)}">${SEL.has(d._id) ? "Remover da seleção" : "Acrescentar seleção"}</button></div>
+        <div class="body">
+          <p>${esc(d.pt)}</p>
+          <div class="meta">${d.loc.map(locHTML).join("")}${d._p?`<span class="flag">coautoria: ${esc(d.loc.find(l=>l.co).au)}</span>`:""}${d._k?`<span class="tag">${d.con.length} conectores</span>`:""}${d._c?`<span class="tag">roda comandos</span>`:""}</div>
+          ${(d._k||d._c||d.pkg.length) ? `<details class="evid"><summary>O que instala e executa</summary>${d._k?`<h4>Conectores que o plugin adiciona ao ser instalado</h4><ul>${d.con.map(x=>`<li>${esc(x.k)}${x.h?` <span>(${esc(x.h)})</span>`:""}</li>`).join("")}</ul>`:""}${d.pkg.length?`<h4>Pacotes de software citados nas instruções</h4><ul>${d.pkg.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}${d.cmd.length?`<h4>Scripts que acompanham a skill</h4><ul>${d.cmd.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}${d.sh?`<h4>Comandos de terminal</h4><ul><li>As instruções da skill trazem blocos de comandos de terminal (bash/shell).</li></ul>`:""}</details>` : ""}
+          <div class="actions">
+            <a class="btn" href="${ghUrl(d.loc[0])}" target="_blank" rel="noopener">Abrir no navegador</a>
+            ${installCmd(d).none ? "" : `<button class="btn btn-primary" type="button" data-act="copy" data-label="Usar no Claude Code">Usar no Claude Code</button>`}
+          </div>
+          ${installCmd(d).none ? `<details class="howto"><summary>Como instalar</summary><div class="install"><p>O plugin ${esc(installCmd(d).plugin)} não está publicado em nenhum marketplace, então não dá para instalar. Para usar como modelo, abra no navegador e copie os arquivos.</p></div></details>` : `<details class="howto"><summary>Como instalar</summary><div class="install">
+            <p>Para instalar no Claude Code, cole os comandos abaixo. Eles instalam o plugin <strong>${esc(installCmd(d).plugin)}</strong> inteiro, com todas as skills dele.</p>
+            <div class="row"><pre>${esc(installCmd(d).cmd)}</pre><button class="btn" type="button" data-act="copy">Copiar</button></div>
+          </div></details>`}
+          <details><summary>Descrição original (inglês)</summary><p>${esc(d.en)}</p></details>
+        </div>
+      </article>`).join("")}
+    </section>`).join("");
+}
+function save(){}
+try{ localStorage.removeItem("f"); }catch(e){}
+["#q","#area","#repo","#autor","#pkg","#cmd"].forEach(s => { $(s).value = ""; });
+["#q","#area","#repo","#autor","#pkg","#cmd"].forEach(s => $(s).addEventListener("input", () => { save(); render(); }));
+render();
+renderSel();
+</script>
+
+</body>
+</html>

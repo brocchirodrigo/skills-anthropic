@@ -1,0 +1,12 @@
+{
+  "marketplaces": [
+    "anthropics/skills",
+    "anthropics/claude-plugins-official",
+    "anthropics/knowledge-work-plugins",
+    "anthropics/financial-services-plugins",
+    "anthropics/life-sciences",
+    "anthropics/claude-for-financial-advisors"
+  ],
+  "third_party_dirs": ["external_plugins", "partner-built"],
+  "package_noise": ["npx: uvx", "uvx: create_issue", "pip: server/vendor", "npm: low", "pip: container_id", "pip: requires-python", "npm: npm", "npm: git", "npm: clone", "conda: conda-forge"]
+}
