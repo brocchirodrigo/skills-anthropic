@@ -1,0 +1,61 @@
+name: Correção de resumo ou área
+description: O resumo em português de uma skill está errado ou ela está na área errada.
+title: "[Resumo] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Os resumos seguem estas regras: uma frase, no máximo duas, com até uns 180 caracteres; começam com verbo na terceira pessoa do presente ("Gera", "Revisa", "Ajuda a"); dizem o que a skill faz para quem usa; mantêm nomes de produtos e siglas; sem adjetivos de propaganda e sem travessões.
+  - type: input
+    id: nome
+    attributes:
+      label: Nome da skill
+      placeholder: pdf
+    validations:
+      required: true
+  - type: textarea
+    id: problema
+    attributes:
+      label: O que está errado
+      description: Explique o que o resumo atual diz de errado ou por que a área não serve.
+    validations:
+      required: true
+  - type: textarea
+    id: sugestao
+    attributes:
+      label: Sugestão de resumo
+      description: Se quiser, escreva o novo resumo.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Área sugerida
+      options:
+        - Manter a atual
+        - Adoção de IA
+        - Busca corporativa
+        - Ciências da vida
+        - Claude Code
+        - Comportamento
+        - Dados
+        - Design
+        - Desenvolvimento
+        - Documentos
+        - Escrita
+        - Finanças e contabilidade
+        - Hardware
+        - Jurídico
+        - Marketing
+        - Matemática
+        - Mercado financeiro
+        - Operações
+        - Pequenas empresas
+        - Produtividade
+        - Produto
+        - RH
+        - Skills e plugins
+        - Suporte ao cliente
+        - Vendas
+      default: 0
+    validations:
+      required: true

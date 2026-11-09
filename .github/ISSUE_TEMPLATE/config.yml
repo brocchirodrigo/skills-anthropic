@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Abrir o catálogo
+    url: https://brocchirodrigo.github.io/skills-anthropic/
+    about: Busque a skill na página antes de abrir uma issue.
+  - name: Problema no conteúdo de uma skill
+    url: https://github.com/anthropics
+    about: Instruções ou scripts de uma skill com erro devem ser relatados no repositório de origem dela.

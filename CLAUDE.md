@@ -15,7 +15,9 @@ Responda e escreva tudo em português do Brasil.
 5. `config/sources.json`: marketplaces oficiais que o script lê, pastas de terceiros e ruídos conhecidos na detecção de pacotes.
 6. `config/areas.json`: área padrão por plugin (`"repositorio:plugin"`) e por skill do repositório `anthropics/skills`.
 7. `scripts/catalog.py`: script de atualização. Só precisa de Python 3.9 ou mais novo e git, sem bibliotecas externas.
-8. `.cache/`: clones dos repositórios de origem. Fica fora do git.
+8. `.cache/`: clones dos repositórios de origem. Fica fora do git (está no `.gitignore`).
+9. `README.md`, `CONTRIBUTING.md` e `LICENSE` (MIT): documentação pública do repositório. Ao mudar regras de inclusão, de resumo ou a lista de áreas aqui, atualize também esses arquivos e o modelo de issue `.github/ISSUE_TEMPLATE/3-correcao-de-resumo.yml`, que repete a lista de áreas.
+10. `.github/`: modelos de issue (formulários em YAML, issue em branco desativada) e de pull request.
 
 ## Como atualizar o catálogo
 

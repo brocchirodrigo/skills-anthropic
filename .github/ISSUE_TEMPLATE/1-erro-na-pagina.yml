@@ -1,0 +1,61 @@
+name: Erro na página
+description: Algo não funciona no site do catálogo (busca, filtros, botões de copiar, layout).
+title: "[Erro] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por avisar. Quanto mais detalhes, mais rápido dá para corrigir.
+  - type: textarea
+    id: o-que-aconteceu
+    attributes:
+      label: O que aconteceu
+      description: Descreva o erro e o que você esperava que acontecesse.
+      placeholder: Ao clicar em "Usar no Claude Code" na skill X, o texto copiado veio vazio.
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Como reproduzir
+      description: Os passos para ver o erro acontecer.
+      placeholder: |
+        1. Abra a página
+        2. Filtre por "Vendas"
+        3. Clique em ...
+    validations:
+      required: true
+  - type: input
+    id: skill
+    attributes:
+      label: Skill envolvida
+      description: Se o erro acontece em uma skill específica, informe o nome dela.
+  - type: dropdown
+    id: navegador
+    attributes:
+      label: Navegador
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Edge
+        - Outro
+    validations:
+      required: true
+  - type: dropdown
+    id: dispositivo
+    attributes:
+      label: Dispositivo
+      options:
+        - Computador
+        - Celular
+        - Tablet
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Mensagens do console
+      description: Se souber abrir o console do navegador, cole aqui os erros que aparecem.
+      render: shell

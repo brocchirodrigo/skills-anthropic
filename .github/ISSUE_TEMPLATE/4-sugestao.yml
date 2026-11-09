@@ -1,0 +1,25 @@
+name: Sugestão de melhoria
+description: Uma ideia nova para a página, o script ou as regras do catálogo.
+title: "[Sugestão] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: O que você quer fazer
+      description: Qual necessidade ou dificuldade a sugestão resolve.
+      placeholder: Quero encontrar rápido as skills que não precisam de conector.
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: Como você imagina que deveria funcionar.
+    validations:
+      required: true
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas
+      description: Outros caminhos que você considerou, se houver.

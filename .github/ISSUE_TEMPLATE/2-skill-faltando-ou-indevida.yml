@@ -1,0 +1,44 @@
+name: Skill faltando ou incluída por engano
+description: Uma skill da Anthropic que não aparece no catálogo, ou uma que aparece mas não deveria.
+title: "[Catálogo] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Só entram no catálogo skills com autoria declarada da Anthropic, sozinha ou em parceria. Plugins só de parceiros e pastas de terceiros (`external_plugins`, `partner-built`) ficam de fora. As regras completas estão no [README](https://github.com/brocchirodrigo/skills-anthropic#quem-entra-no-catálogo).
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de problema
+      options:
+        - Skill da Anthropic que não aparece no catálogo
+        - Skill que aparece mas não é de autoria da Anthropic
+        - Skill que já saiu do repositório de origem
+        - Skill que aparece duplicada
+    validations:
+      required: true
+  - type: input
+    id: nome
+    attributes:
+      label: Nome da skill
+      placeholder: pdf
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Link da skill no GitHub
+      description: A pasta que contém o `SKILL.md`.
+      placeholder: https://github.com/anthropics/skills/tree/main/skills/pdf
+    validations:
+      required: true
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Autoria e marketplace
+      description: Onde está declarado o autor (`author` no marketplace ou no `plugin.json`) e em qual marketplace a skill é publicada, se souber.
+  - type: textarea
+    id: detalhes
+    attributes:
+      label: Outros detalhes
